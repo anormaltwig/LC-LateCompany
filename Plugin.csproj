@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net46</TargetFramework>
+		<LangVersion>11</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="BepInEx">
+			<HintPath>Lethal Company/BepInEx/core/BepInEx.dll</HintPath>
+		</Reference>
+		<Reference Include="BepInEx.Harmony">
+			<HintPath>Lethal Company/BepInEx/core/BepInEx.Harmony.dll</HintPath>
+		</Reference>
+		<Reference Include="0Harmony">
+			<HintPath>Lethal Company/BepInEx/core/0Harmony.dll</HintPath>
+		</Reference>
+		<Reference Include="MonoMod.RuntimeDetour">
+			<HintPath>Lethal Company/BepInEx/core/MonoMod.RuntimeDetour.dll</HintPath>
+		</Reference>
+		<Reference Include="MonoMod.Utils">
+			<HintPath>Lethal Company/BepInEx/core/MonoMod.Utils.dll</HintPath>
+		</Reference>
+		<Reference Include="MonoMod.Cecil">
+			<HintPath>Lethal Company/BepInEx/core/Mono.Cecil.dll</HintPath>
+		</Reference>
+
+		<Reference Include="Assembly-CSharp">
+			<HintPath>Lethal Company/Lethal Company_Data/Managed/Assembly-CSharp.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>Lethal Company/Lethal Company_Data/Managed/UnityEngine.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>Lethal Company/Lethal Company_Data/Managed/UnityEngine.CoreModule.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.InputSystem">
+			<HintPath>Lethal Company/Lethal Company_Data/Managed/Unity.InputSystem.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PhysicsModule">
+			<HintPath>Lethal Company/Lethal Company_Data/Managed/UnityEngine.PhysicsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Netcode.Runtime">
+			<HintPath>Lethal Company/Lethal Company_Data/Managed/Unity.Netcode.Runtime.dll</HintPath>
+		</Reference>
+
+		<Reference Include="Facepunch.Steamworks.Win64">
+			<HintPath>Lethal Company/Lethal Company_Data/Managed/Facepunch.Steamworks.Win64.dll</HintPath>
+		</Reference>
+
+		<Reference Include="netstandard">
+			<HintPath>Lethal Company/Lethal Company_Data/Managed/netstandard.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+</Project>
+
