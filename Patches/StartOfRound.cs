@@ -5,6 +5,8 @@ using Unity.Netcode;
 
 using HarmonyLib;
 
+namespace LateCompany.Patches;
+
 [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.OnClientConnect))]
 [HarmonyWrapSafe]
 internal class OnClientConnect_Patch

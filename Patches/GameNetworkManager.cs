@@ -5,7 +5,7 @@ using Unity.Netcode;
 
 using HarmonyLib;
 
-namespace ReasonableCompany.Patches;
+namespace LateCompany.Patches;
 
 [HarmonyPatch(typeof(GameNetworkManager), nameof(GameNetworkManager.LeaveLobbyAtGameStart))]
 [HarmonyWrapSafe]
@@ -25,7 +25,7 @@ internal static class ConnectionApproval_Patch
 		if (request.ClientNetworkId == NetworkManager.Singleton.LocalClientId)
 			return;
 
-		if (response.Reason.Contains("The host was not accepting connections.") || response.Reason.Contains("Game has already started") || GameNetworkManager.Instance.gameHasStarted) {
+		if (response.Reason.Contains("Game has already started") && GameNetworkManager.Instance.gameHasStarted) {
 			UnityEngine.Debug.Log("Uhh, no i do actually want this one to connect.");
 			response.Reason = "";
 			response.CreatePlayerObject = false;
