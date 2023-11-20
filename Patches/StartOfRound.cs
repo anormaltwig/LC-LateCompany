@@ -2,20 +2,20 @@ using System.Reflection;
 using System.Collections.Generic;
 
 using Unity.Netcode;
+using GameNetcodeStuff;
 
 using HarmonyLib;
 
 namespace LateCompany.Patches;
 
-[HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.OnClientConnect))]
+[HarmonyPatch(typeof(StartOfRound), "OnPlayerConnectedClientRpc")]
 [HarmonyWrapSafe]
-internal class OnClientConnect_Patch
-{
+internal class OnPlayerConnectedClientRpc_Patch {
+	// Best guess at getting new players to load into the map after the game starts.
 	[HarmonyPostfix]
-	private static void Postfix(ulong clientId)
-	{
-		// Best guess at getting new players to load into the map after the game starts.
+	private static void Postfix(ulong clientId, int connectedPlayers, ulong[] connectedPlayerIdsOrdered, int assignedPlayerObjectId, int serverMoneyAmount, int levelID, int profitQuota, int timeUntilDeadline, int quotaFulfilled, int randomSeed) {
 		StartOfRound sor = StartOfRound.Instance;
+		PlayerControllerB ply = sor.allPlayerScripts[assignedPlayerObjectId];
 
 		if (sor.IsServer && !sor.inShipPhase) {
 			RoundManager rm = RoundManager.Instance;
@@ -46,6 +46,10 @@ internal class OnClientConnect_Patch
 			// This is where I would tell the new player what the weather outside is, if I could find any function to do that.
 			// Maybe I can find something to force the weather to be the same or just sync it myself.
 		}
+
+		// Ensure their player model is visible.
+		// I think everyone in the lobby needs to mod installed for this to work but, oh well.
+		ply.DisablePlayerModel(sor.allPlayerObjects[assignedPlayerObjectId], true, true);
 	}
 }
 
