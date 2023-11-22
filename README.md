@@ -1,6 +1,6 @@
 # LateCompany
 
-Lets players join after you start the game.
+Lets players join you after the game has started.
 
 ## Info
 

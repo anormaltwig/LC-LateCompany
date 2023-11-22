@@ -20,7 +20,6 @@ internal static class ConnectionApproval_Patch {
 			return;
 
 		if (response.Reason.Contains("Game has already started") && GameNetworkManager.Instance.gameHasStarted) {
-			UnityEngine.Debug.Log("Uhh, no i do actually want this one to connect.");
 			response.Reason = "";
 			response.CreatePlayerObject = false;
 			response.Approved = true;
