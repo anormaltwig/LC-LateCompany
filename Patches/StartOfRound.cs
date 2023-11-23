@@ -51,10 +51,10 @@ internal class OnPlayerConnectedClientRpc_Patch {
 			}
 		}
 
-		sor.livingPlayers = sor.connectedPlayersAmount;
-		for (int i = 0; i < sor.connectedPlayersAmount; i++) {
+		sor.livingPlayers = sor.connectedPlayersAmount + 1;
+		for (int i = 0; i < sor.allPlayerScripts.Length; i++) {
 			PlayerControllerB pcb = sor.allPlayerScripts[i];
-			if (pcb.isPlayerDead) sor.livingPlayers--;
+			if (pcb.isPlayerControlled && pcb.isPlayerDead) sor.livingPlayers--;
 		}
 	}
 }
