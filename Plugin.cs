@@ -9,7 +9,7 @@ namespace LateCompany;
 public static class PluginInfo {
 	public const string GUID = "twig.latecompany";
 	public const string PrintName = "Late Company";
-	public const string Version = "1.0.3";
+	public const string Version = "1.0.4";
 }
 
 [BepInPlugin(PluginInfo.GUID, PluginInfo.PrintName, PluginInfo.Version)]
