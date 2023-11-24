@@ -20,7 +20,7 @@ internal static class ConnectionApproval_Patch {
 			return;
 
 		if (response.Reason.Contains("Game has already started") && GameNetworkManager.Instance.gameHasStarted) {
-			if (StartOfRound.Instance.shipHasLanded && Plugin.OnlyLateJoinInOrbit) return;
+			if (!StartOfRound.Instance.inShipPhase && Plugin.OnlyLateJoinInOrbit) return;
 
 			response.Reason = "";
 			response.CreatePlayerObject = false;
