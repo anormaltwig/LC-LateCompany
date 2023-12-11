@@ -1,7 +1,6 @@
 using System.Reflection;
 using System.Collections.Generic;
 
-using UnityEngine;
 using Unity.Netcode;
 using GameNetcodeStuff;
 
@@ -22,7 +21,7 @@ internal class OnPlayerConnectedClientRpc_Patch {
 		PlayerControllerB ply = sor.allPlayerScripts[assignedPlayerObjectId];
 
 		if (sor.connectedPlayersAmount + 1 >= sor.allPlayerScripts.Length)
-			GameNetworkManager.Instance.SetLobbyJoinable(false);
+			Plugin.SetLobbyJoinable(false);
 
 		// Make their player model visible.
 		ply.DisablePlayerModel(sor.allPlayerObjects[assignedPlayerObjectId], true, true);
@@ -66,7 +65,7 @@ internal class OnPlayerDC_Patch {
 	public static void Postfix() {
 		if (!StartOfRound.Instance.inShipPhase && Plugin.OnlyLateJoinInOrbit) return;
 
-		GameNetworkManager.Instance.SetLobbyJoinable(true);
+		Plugin.SetLobbyJoinable(true);
 	}
 }
 
@@ -76,7 +75,7 @@ internal class StartGame_Patch {
 	[HarmonyPrefix]
 	public static void Prefix() {
 		if (Plugin.OnlyLateJoinInOrbit)
-			GameNetworkManager.Instance.SetLobbyJoinable(false);
+			Plugin.SetLobbyJoinable(false);
 	}
 }
 
@@ -86,7 +85,7 @@ internal class SetShipReadyToLand_Patch {
 	[HarmonyPrefix]
 	public static void Postfix() {
 		if (Plugin.OnlyLateJoinInOrbit && StartOfRound.Instance.connectedPlayersAmount + 1 < StartOfRound.Instance.allPlayerScripts.Length)
-			GameNetworkManager.Instance.SetLobbyJoinable(true);
+			Plugin.SetLobbyJoinable(true);
 	}
 }
 

@@ -42,6 +42,9 @@
 		<Reference Include="Unity.Netcode.Runtime">
 			<HintPath>Lethal Company/Lethal Company_Data/Managed/Unity.Netcode.Runtime.dll</HintPath>
 		</Reference>
+		<Reference Include="UnityEngine.UIModule">
+			<HintPath>Lethal Company/Lethal Company_Data/Managed/UnityEngine.UIModule.dll</HintPath>
+		</Reference>
 
 		<Reference Include="Facepunch.Steamworks.Win64">
 			<HintPath>Lethal Company/Lethal Company_Data/Managed/Facepunch.Steamworks.Win64.dll</HintPath>
