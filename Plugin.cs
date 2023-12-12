@@ -11,7 +11,7 @@ namespace LateCompany;
 public static class PluginInfo {
 	public const string GUID = "twig.latecompany";
 	public const string PrintName = "Late Company";
-	public const string Version = "1.0.5";
+	public const string Version = "1.0.6";
 }
 
 [BepInPlugin(PluginInfo.GUID, PluginInfo.PrintName, PluginInfo.Version)]
@@ -29,9 +29,10 @@ internal class Plugin: BaseUnityPlugin {
 		Logger.Log(LogLevel.Info, "Late Company loaded!");
 	}
 
-	public static bool lobbyJoinable = true;
+	public static bool LobbyJoinable = true;
+
 	static public void SetLobbyJoinable(bool joinable) {
-		lobbyJoinable = joinable;
+		LobbyJoinable = joinable;
 
 		GameNetworkManager.Instance.SetLobbyJoinable(joinable);
 

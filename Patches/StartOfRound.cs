@@ -40,6 +40,7 @@ internal class OnPlayerConnectedClientRpc_Patch {
 				FastBufferWriter fastBufferWriter = (FastBufferWriter)BeginSendClientRpc.Invoke(rm, new object[]{1193916134U, clientRpcParams, 0});
 				BytePacker.WriteValueBitPacked(fastBufferWriter, StartOfRound.Instance.randomMapSeed);
 				BytePacker.WriteValueBitPacked(fastBufferWriter, StartOfRound.Instance.currentLevelID);
+				BytePacker.WriteValueBitPacked(fastBufferWriter, (short)rm.currentLevel.currentWeather);
 				EndSendClientRpc.Invoke(rm, new object[]{fastBufferWriter, 1193916134U, clientRpcParams, 0});
 			}
 

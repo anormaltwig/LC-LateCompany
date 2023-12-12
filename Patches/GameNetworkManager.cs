@@ -19,7 +19,7 @@ internal static class ConnectionApproval_Patch {
 		if (request.ClientNetworkId == NetworkManager.Singleton.LocalClientId)
 			return;
 
-		if (response.Reason.Contains("Game has already started") && Plugin.lobbyJoinable) {
+		if (response.Reason.Contains("Game has already started") && Plugin.LobbyJoinable) {
 			response.Reason = "";
 			response.CreatePlayerObject = false;
 			response.Approved = true;

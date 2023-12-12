@@ -14,7 +14,7 @@ internal static class DisableInviteFriendsButton_Patch {
 internal static class InviteFriendsButton_Patch {
 	[HarmonyPrefix]
 	private static bool Prefix() {
-		if (Plugin.lobbyJoinable) GameNetworkManager.Instance.InviteFriendsUI();
+		if (Plugin.LobbyJoinable) GameNetworkManager.Instance.InviteFriendsUI();
 
 		return false;
 	}
