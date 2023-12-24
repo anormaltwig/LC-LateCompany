@@ -1,6 +1,6 @@
 {
 	"name": "LateCompany",
-	"version_number": "1.0.6",
+	"version_number": "1.0.7",
 	"website_url": "https://github.com/ANormalTwig/LC-LateCompany",
 	"description": "A mod to allow players to join after the game starts.",
 	"dependencies": [
