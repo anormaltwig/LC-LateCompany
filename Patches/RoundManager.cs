@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 
 using Unity.Netcode;
@@ -26,7 +27,7 @@ internal static class __rpc_handler_1193916134_Patch {
 	[HarmonyPrefix]
 	private static bool Prefix(NetworkBehaviour target, FastBufferReader reader, __RpcParams rpcParams) {
 		NetworkManager networkManager = target.NetworkManager;
-		if (networkManager != null && networkManager.IsListening) {
+		if (networkManager != null && networkManager.IsListening && !networkManager.IsHost) {
 			try {
 				int randomSeed;
 				ByteUnpacker.ReadValueBitPacked(reader, out randomSeed);
@@ -36,12 +37,20 @@ internal static class __rpc_handler_1193916134_Patch {
 				int weatherId;
 				ByteUnpacker.ReadValueBitPacked(reader, out weatherId);
 
-				WeatherSync.CurrentWeather = (LevelWeatherType)weatherId;
+				LevelWeatherType weatherType = (LevelWeatherType)weatherId;
+
+				// Remove this if Lethal Company actually uses the DustClouds weather.
+				if (weatherType == LevelWeatherType.DustClouds)
+					throw new Exception("In case of emergency, break glass.");
+
+				WeatherSync.CurrentWeather = weatherType;
 				WeatherSync.DoOverride = true;
 
 				RPCExecStage.SetValue(target, RpcEnum.Client);
 				(target as RoundManager).GenerateNewLevelClientRpc(randomSeed, levelID);
 				RPCExecStage.SetValue(target, RpcEnum.None);
+
+				return false;
 			}
 			catch {
 				// Something went wrong, default to original method.
@@ -51,7 +60,7 @@ internal static class __rpc_handler_1193916134_Patch {
 			}
 		}
 
-		return false;
+		return true;
 	}
 }
 
