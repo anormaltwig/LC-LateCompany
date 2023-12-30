@@ -29,22 +29,19 @@ internal static class __rpc_handler_1193916134_Patch {
 		NetworkManager networkManager = target.NetworkManager;
 		if (networkManager != null && networkManager.IsListening && !networkManager.IsHost) {
 			try {
-				int randomSeed;
-				ByteUnpacker.ReadValueBitPacked(reader, out randomSeed);
-				int levelID;
-				ByteUnpacker.ReadValueBitPacked(reader, out levelID);
+				ByteUnpacker.ReadValueBitPacked(reader, out int randomSeed);
+				ByteUnpacker.ReadValueBitPacked(reader, out int levelID);
 
-				int weatherId;
-				ByteUnpacker.ReadValueBitPacked(reader, out weatherId);
+				if (reader.Position < reader.Length) {
+					ByteUnpacker.ReadValueBitPacked(reader, out int weatherId);
+					weatherId -= 0xFF;
 
-				LevelWeatherType weatherType = (LevelWeatherType)weatherId;
+					if (weatherId < 0)
+						throw new Exception("In case of emergency, break glass.");
 
-				// Remove this if Lethal Company actually uses the DustClouds weather.
-				if (weatherType == LevelWeatherType.DustClouds)
-					throw new Exception("In case of emergency, break glass.");
-
-				WeatherSync.CurrentWeather = weatherType;
-				WeatherSync.DoOverride = true;
+					WeatherSync.CurrentWeather = (LevelWeatherType)weatherId;
+					WeatherSync.DoOverride = true;
+				}
 
 				RPCExecStage.SetValue(target, RpcEnum.Client);
 				(target as RoundManager).GenerateNewLevelClientRpc(randomSeed, levelID);

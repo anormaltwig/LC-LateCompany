@@ -40,7 +40,7 @@ internal static class OnPlayerConnectedClientRpc_Patch {
 				FastBufferWriter fastBufferWriter = (FastBufferWriter)BeginSendClientRpc.Invoke(rm, new object[] { 1193916134U, clientRpcParams, 0 });
 				BytePacker.WriteValueBitPacked(fastBufferWriter, StartOfRound.Instance.randomMapSeed);
 				BytePacker.WriteValueBitPacked(fastBufferWriter, StartOfRound.Instance.currentLevelID);
-				BytePacker.WriteValueBitPacked(fastBufferWriter, (int)rm.currentLevel.currentWeather);
+				BytePacker.WriteValueBitPacked(fastBufferWriter, (int)rm.currentLevel.currentWeather + 0xFF);
 				EndSendClientRpc.Invoke(rm, new object[] { fastBufferWriter, 1193916134U, clientRpcParams, 0 });
 			}
 
@@ -64,7 +64,7 @@ internal static class OnPlayerConnectedClientRpc_Patch {
 internal static class OnPlayerDC_Patch {
 	[HarmonyPostfix]
 	private static void Postfix() {
-		if (StartOfRound.Instance.inShipPhase || (!Plugin.OnlyLateJoinInOrbit && StartOfRound.Instance.shipHasLanded))
+		if (StartOfRound.Instance.inShipPhase || (Plugin.AllowJoiningWhileLanded && StartOfRound.Instance.shipHasLanded))
 			Plugin.SetLobbyJoinable(true);
 	}
 }
@@ -73,7 +73,7 @@ internal static class OnPlayerDC_Patch {
 internal static class SetShipReadyToLand_Patch {
 	[HarmonyPostfix]
 	private static void Postfix() {
-		if (Plugin.OnlyLateJoinInOrbit && StartOfRound.Instance.connectedPlayersAmount + 1 < StartOfRound.Instance.allPlayerScripts.Length)
+		if (StartOfRound.Instance.connectedPlayersAmount + 1 < StartOfRound.Instance.allPlayerScripts.Length)
 			Plugin.SetLobbyJoinable(true);
 	}
 }
@@ -90,7 +90,7 @@ internal static class StartGame_Patch {
 internal static class OnShipLandedMiscEvents_Patch {
 	[HarmonyPostfix]
 	private static void Postfix() {
-		if (!Plugin.OnlyLateJoinInOrbit && StartOfRound.Instance.connectedPlayersAmount + 1 < StartOfRound.Instance.allPlayerScripts.Length)
+		if (Plugin.AllowJoiningWhileLanded && StartOfRound.Instance.connectedPlayersAmount + 1 < StartOfRound.Instance.allPlayerScripts.Length)
 			Plugin.SetLobbyJoinable(true);
 	}
 }
