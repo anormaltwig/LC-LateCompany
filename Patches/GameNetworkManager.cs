@@ -15,8 +15,7 @@ internal static class LeaveLobbyAtGameStart_Patch {
 [HarmonyWrapSafe]
 internal static class ConnectionApproval_Patch {
 	[HarmonyPostfix]
-	private static void Postfix(ref NetworkManager.ConnectionApprovalRequest request, ref NetworkManager.ConnectionApprovalResponse response)
-	{
+	private static void Postfix(ref NetworkManager.ConnectionApprovalRequest request, ref NetworkManager.ConnectionApprovalResponse response) {
 		if (request.ClientNetworkId == NetworkManager.Singleton.LocalClientId)
 			return;
 
