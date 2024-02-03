@@ -10,6 +10,10 @@ Please report any bugs you find on the github repository!
 
 ## Changelogs
 
+### V1.0.11
+
+- Fixed error when clicking invite friends button on LAN (1A3Dev)
+
 ### V1.0.10
 
 - ConnectionApproval error fix (Thanks 1A3Dev!)
