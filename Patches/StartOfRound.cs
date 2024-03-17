@@ -54,13 +54,13 @@ internal static class OnPlayerConnectedClientRpc_Patch {
     }
 
     public static MethodInfo BeginSendClientRpc = typeof(RoundManager).GetMethod("__beginSendClientRpc", BindingFlags.NonPublic | BindingFlags.Instance);
-	public static MethodInfo EndSendClientRpc = typeof(RoundManager).GetMethod("__endSendClientRpc", BindingFlags.NonPublic | BindingFlags.Instance);
+    public static MethodInfo EndSendClientRpc = typeof(RoundManager).GetMethod("__endSendClientRpc", BindingFlags.NonPublic | BindingFlags.Instance);
 
-	// Best guess at getting new players to load into the map after the game starts.
-	[HarmonyPostfix]
-	private static void Postfix(StartOfRound __instance, ulong clientId, int connectedPlayers, ulong[] connectedPlayerIdsOrdered, int assignedPlayerObjectId, int serverMoneyAmount, int levelID, int profitQuota, int timeUntilDeadline, int quotaFulfilled, int randomSeed) {
-		if (__instance.connectedPlayersAmount + 1 >= __instance.allPlayerScripts.Length)
-			Plugin.SetLobbyJoinable(false);
+    // Best guess at getting new players to load into the map after the game starts.
+    [HarmonyPostfix]
+    private static void Postfix(StartOfRound __instance, ulong clientId, int connectedPlayers, ulong[] connectedPlayerIdsOrdered, int assignedPlayerObjectId, int serverMoneyAmount, int levelID, int profitQuota, int timeUntilDeadline, int quotaFulfilled, int randomSeed) {
+	    if (__instance.connectedPlayersAmount + 1 >= __instance.allPlayerScripts.Length)
+		    Plugin.SetLobbyJoinable(false);
 
         PlayerControllerB ply = __instance.allPlayerScripts[assignedPlayerObjectId];
         // Make their player model visible.
@@ -86,29 +86,29 @@ internal static class OnPlayerConnectedClientRpc_Patch {
         }
 
         if (__instance.IsServer && !__instance.inShipPhase) {
-			RoundManager rm = RoundManager.Instance;
+		    RoundManager rm = RoundManager.Instance;
 
-			ClientRpcParams clientRpcParams = new() {
-				Send = new ClientRpcSendParams() {
-					TargetClientIds = new List<ulong>() { clientId },
-				},
-			};
+		    ClientRpcParams clientRpcParams = new() {
+			    Send = new ClientRpcSendParams() {
+				    TargetClientIds = new List<ulong>() { clientId },
+			    },
+		    };
 
-			// Tell the new client to generate the level.
-			{
-				FastBufferWriter fastBufferWriter = (FastBufferWriter)BeginSendClientRpc.Invoke(rm, new object[] { 1193916134U, clientRpcParams, 0 });
-				BytePacker.WriteValueBitPacked(fastBufferWriter, __instance.randomMapSeed);
-				BytePacker.WriteValueBitPacked(fastBufferWriter, __instance.currentLevelID);
-				BytePacker.WriteValueBitPacked(fastBufferWriter, (int)rm.currentLevel.currentWeather + 0xFF);
-				EndSendClientRpc.Invoke(rm, new object[] { fastBufferWriter, 1193916134U, clientRpcParams, 0 });
-			}
+		    // Tell the new client to generate the level.
+		    {
+			    FastBufferWriter fastBufferWriter = (FastBufferWriter)BeginSendClientRpc.Invoke(rm, new object[] { 1193916134U, clientRpcParams, 0 });
+			    BytePacker.WriteValueBitPacked(fastBufferWriter, __instance.randomMapSeed);
+			    BytePacker.WriteValueBitPacked(fastBufferWriter, __instance.currentLevelID);
+			    BytePacker.WriteValueBitPacked(fastBufferWriter, (int)rm.currentLevel.currentWeather + 0xFF);
+			    EndSendClientRpc.Invoke(rm, new object[] { fastBufferWriter, 1193916134U, clientRpcParams, 0 });
+		    }
 
-			// And also tell them that everyone is done generating it.
-			{
-				FastBufferWriter fastBufferWriter = (FastBufferWriter)BeginSendClientRpc.Invoke(rm, new object[] { 2729232387U, clientRpcParams, 0 });
-				EndSendClientRpc.Invoke(rm, new object[] { fastBufferWriter, 2729232387U, clientRpcParams, 0 });
-			}
-		}
+		    // And also tell them that everyone is done generating it.
+		    {
+			    FastBufferWriter fastBufferWriter = (FastBufferWriter)BeginSendClientRpc.Invoke(rm, new object[] { 2729232387U, clientRpcParams, 0 });
+			    EndSendClientRpc.Invoke(rm, new object[] { fastBufferWriter, 2729232387U, clientRpcParams, 0 });
+		    }
+	    }
     }
 }
 
