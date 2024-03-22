@@ -8,12 +8,25 @@ using HarmonyLib;
 using System.Linq;
 using System.Reflection.Emit;
 using UnityEngine;
+using System;
 
 namespace LateCompany.Patches;
 
 [HarmonyPatch(typeof(StartOfRound), "OnPlayerConnectedClientRpc")]
 [HarmonyWrapSafe]
 internal static class OnPlayerConnectedClientRpc_Patch {
+	internal static void UpdateControlledState()
+	{
+		for (int j = 0; j < StartOfRound.Instance.connectedPlayersAmount + 1; j++)
+		{
+			// Don't set the player as controlled if they are dead.
+			if ((j == 0 || !StartOfRound.Instance.allPlayerScripts[j].IsOwnedByServer) && !StartOfRound.Instance.allPlayerScripts[j].isPlayerDead)
+			{
+				StartOfRound.Instance.allPlayerScripts[j].isPlayerControlled = true;
+			}
+		}
+	}
+
 	[HarmonyTranspiler]
 	private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
 		var newInstructions = new List<CodeInstruction>();
@@ -33,6 +46,7 @@ internal static class OnPlayerConnectedClientRpc_Patch {
 				else if (shouldSkip && instruction.opcode == OpCodes.Ldloc_0) {
 					shouldSkip = false;
 					alreadyReplaced = true;
+					newInstructions.Add(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(OnPlayerConnectedClientRpc_Patch), "UpdateControlledState", new Type[] {})));
 				}
 			}
 
@@ -62,15 +76,6 @@ internal static class OnPlayerConnectedClientRpc_Patch {
 		for (int i = 0; i < __instance.allPlayerScripts.Length; i++) {
 			PlayerControllerB pcb = __instance.allPlayerScripts[i];
 			if (pcb.isPlayerControlled && pcb.isPlayerDead) __instance.livingPlayers--;
-		}
-
-		if (NetworkManager.Singleton != null) {
-			for (int j = 0; j < __instance.connectedPlayersAmount + 1; j++) {
-				// Don't set the player as controlled if they are dead.
-				if ((j == 0 || !__instance.allPlayerScripts[j].IsOwnedByServer) && !__instance.allPlayerScripts[j].isPlayerDead) {
-					__instance.allPlayerScripts[j].isPlayerControlled = true;
-				}
-			}
 		}
 
 		if (__instance.IsServer && !__instance.inShipPhase) {
