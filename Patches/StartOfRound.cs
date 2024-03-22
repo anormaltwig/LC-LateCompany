@@ -15,13 +15,10 @@ namespace LateCompany.Patches;
 [HarmonyPatch(typeof(StartOfRound), "OnPlayerConnectedClientRpc")]
 [HarmonyWrapSafe]
 internal static class OnPlayerConnectedClientRpc_Patch {
-	internal static void UpdateControlledState()
-	{
-		for (int j = 0; j < StartOfRound.Instance.connectedPlayersAmount + 1; j++)
-		{
+	internal static void UpdateControlledState() {
+		for (int j = 0; j < StartOfRound.Instance.connectedPlayersAmount + 1; j++) {
 			// Don't set the player as controlled if they are dead.
-			if ((j == 0 || !StartOfRound.Instance.allPlayerScripts[j].IsOwnedByServer) && !StartOfRound.Instance.allPlayerScripts[j].isPlayerDead)
-			{
+			if ((j == 0 || !StartOfRound.Instance.allPlayerScripts[j].IsOwnedByServer) && !StartOfRound.Instance.allPlayerScripts[j].isPlayerDead) {
 				StartOfRound.Instance.allPlayerScripts[j].isPlayerControlled = true;
 			}
 		}
