@@ -19,9 +19,12 @@ internal static class WeatherSync {
 	public static LevelWeatherType CurrentWeather = LevelWeatherType.None;
 }
 
-[HarmonyPatch(typeof(RoundManager), "__rpc_handler_1193916134")]
+/// <summary>
+/// RoundManager.GenerateNewLevelClientRpc
+/// </summary>
+[HarmonyPatch(typeof(RoundManager), "__rpc_handler_3073943002")]
 [HarmonyWrapSafe]
-internal static class __rpc_handler_1193916134_Patch {
+internal static class __rpc_handler_3073943002_Patch
 	public static FieldInfo RPCExecStage = typeof(NetworkBehaviour).GetField("__rpc_exec_stage", BindingFlags.NonPublic | BindingFlags.Instance);
 
 	[HarmonyPrefix]
