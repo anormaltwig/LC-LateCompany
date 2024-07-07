@@ -19,7 +19,7 @@ internal static class WeatherSync {
 	public static LevelWeatherType CurrentWeather = LevelWeatherType.None;
 }
 
-[HarmonyPatch(typeof(RoundManager), "__rpc_handler_1193916134")]
+[HarmonyPatch(typeof(RoundManager), "__rpc_handler_3073943002")]
 [HarmonyWrapSafe]
 internal static class __rpc_handler_1193916134_Patch {
 	public static FieldInfo RPCExecStage = typeof(NetworkBehaviour).GetField("__rpc_exec_stage", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -31,6 +31,13 @@ internal static class __rpc_handler_1193916134_Patch {
 			try {
 				ByteUnpacker.ReadValueBitPacked(reader, out int randomSeed);
 				ByteUnpacker.ReadValueBitPacked(reader, out int levelID);
+				ByteUnpacker.ReadValueBitPacked(reader, out int moldIterations);
+				ByteUnpacker.ReadValueBitPacked(reader, out int moldStartPosition);
+				reader.ReadValueSafe(out bool flag);
+				int[] syncDestroyedMold = null;
+				if (flag) {
+					reader.ReadValueSafe<int>(out syncDestroyedMold);
+				}
 
 				if (reader.Position < reader.Length) {
 					ByteUnpacker.ReadValueBitPacked(reader, out int weatherId);
@@ -44,7 +51,7 @@ internal static class __rpc_handler_1193916134_Patch {
 				}
 
 				RPCExecStage.SetValue(target, RpcEnum.Client);
-				(target as RoundManager).GenerateNewLevelClientRpc(randomSeed, levelID);
+				(target as RoundManager).GenerateNewLevelClientRpc(randomSeed, levelID, moldIterations, moldStartPosition, syncDestroyedMold);
 				RPCExecStage.SetValue(target, RpcEnum.None);
 
 				return false;

@@ -56,8 +56,8 @@ internal static class OnPlayerConnectedClientRpc_Patch {
 		return newInstructions.AsEnumerable();
 	}
 
-	public static MethodInfo BeginSendClientRpc = typeof(RoundManager).GetMethod("__beginSendClientRpc", BindingFlags.NonPublic | BindingFlags.Instance);
-	public static MethodInfo EndSendClientRpc = typeof(RoundManager).GetMethod("__endSendClientRpc", BindingFlags.NonPublic | BindingFlags.Instance);
+	public static MethodInfo BeginSendClientRpc = typeof(NetworkBehaviour).GetMethod("__beginSendClientRpc", BindingFlags.NonPublic | BindingFlags.Instance);
+	public static MethodInfo EndSendClientRpc = typeof(NetworkBehaviour).GetMethod("__endSendClientRpc", BindingFlags.NonPublic | BindingFlags.Instance);
 
 	// Best guess at getting new players to load into the map after the game starts.
 	[HarmonyPostfix]
@@ -85,18 +85,31 @@ internal static class OnPlayerConnectedClientRpc_Patch {
 			};
 
 			// Tell the new client to generate the level.
+			uint GenerateNewLevelClientRpc = 3073943002U;
 			{
-				FastBufferWriter fastBufferWriter = (FastBufferWriter)BeginSendClientRpc.Invoke(rm, new object[] { 1193916134U, clientRpcParams, 0 });
+				FastBufferWriter fastBufferWriter = (FastBufferWriter)BeginSendClientRpc.Invoke(rm, new object[] { GenerateNewLevelClientRpc, clientRpcParams, 0 });
 				BytePacker.WriteValueBitPacked(fastBufferWriter, __instance.randomMapSeed);
 				BytePacker.WriteValueBitPacked(fastBufferWriter, __instance.currentLevelID);
+				BytePacker.WriteValueBitPacked(fastBufferWriter, __instance.currentLevel.moldSpreadIterations);
+				BytePacker.WriteValueBitPacked(fastBufferWriter, __instance.currentLevel.moldStartPosition);
+
+				MoldSpreadManager msm = UnityEngine.Object.FindObjectOfType<MoldSpreadManager>();
+				bool flag = msm != null;
+				fastBufferWriter.WriteValueSafe(flag);
+				if (flag) {
+					fastBufferWriter.WriteValueSafe(msm.planetMoldStates[StartOfRound.Instance.currentLevelID].destroyedMold.ToArray());
+				}
+
 				BytePacker.WriteValueBitPacked(fastBufferWriter, (int)rm.currentLevel.currentWeather + 0xFF);
-				EndSendClientRpc.Invoke(rm, new object[] { fastBufferWriter, 1193916134U, clientRpcParams, 0 });
+
+				EndSendClientRpc.Invoke(rm, new object[] { fastBufferWriter, GenerateNewLevelClientRpc, clientRpcParams, 0 });
 			}
 
 			// And also tell them that everyone is done generating it.
+			uint FinishGeneratingNewLevelClientRpc = 2729232387U;
 			{
-				FastBufferWriter fastBufferWriter = (FastBufferWriter)BeginSendClientRpc.Invoke(rm, new object[] { 2729232387U, clientRpcParams, 0 });
-				EndSendClientRpc.Invoke(rm, new object[] { fastBufferWriter, 2729232387U, clientRpcParams, 0 });
+				FastBufferWriter fastBufferWriter = (FastBufferWriter)BeginSendClientRpc.Invoke(rm, new object[] { FinishGeneratingNewLevelClientRpc, clientRpcParams, 0 });
+				EndSendClientRpc.Invoke(rm, new object[] { fastBufferWriter, FinishGeneratingNewLevelClientRpc, clientRpcParams, 0 });
 			}
 		}
 	}
