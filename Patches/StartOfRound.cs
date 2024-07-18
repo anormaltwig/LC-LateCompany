@@ -51,6 +51,12 @@ internal static class OnPlayerConnectedClientRpc_Patch {
 
 		return newInstructions.AsEnumerable();
 	}
+
+	[HarmonyPostfix]
+	private static void Postfix() {
+		if (StartOfRound.Instance.connectedPlayersAmount + 1 >= StartOfRound.Instance.allPlayerScripts.Length)
+			Plugin.SetLobbyJoinable(false);
+	}
 }
 
 [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.OnPlayerDC))]
