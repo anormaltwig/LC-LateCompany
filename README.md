@@ -10,9 +10,20 @@ Please report any bugs you find on the github repository!
 
 ## Changelogs
 
+### V1.0.15
+
+- Removed ability to join while the ship is landed. Too many desync issues.
+
+### V1.0.14
+
+- Updated to v56
+
 ### V1.0.13
 
 - [Fixed isPlayerControlled not being set as true early enough (1A3Dev)](https://github.com/ANormalTwig/LC-LateCompany/pull/39)
+
+<details>
+<summary>More</summary>
 
 ### V1.0.12
 
@@ -21,9 +32,6 @@ Please report any bugs you find on the github repository!
 ### V1.0.11
 
 - Fixed error when clicking invite friends button on LAN (1A3Dev)
-
-<details>
-<summary>Old</summary>
 
 ### V1.0.10
 

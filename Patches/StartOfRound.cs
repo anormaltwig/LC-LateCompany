@@ -1,8 +1,4 @@
-using System.Reflection;
 using System.Collections.Generic;
-
-using Unity.Netcode;
-using GameNetcodeStuff;
 
 using HarmonyLib;
 using System.Linq;
@@ -55,64 +51,6 @@ internal static class OnPlayerConnectedClientRpc_Patch {
 
 		return newInstructions.AsEnumerable();
 	}
-
-	public static MethodInfo BeginSendClientRpc = typeof(NetworkBehaviour).GetMethod("__beginSendClientRpc", BindingFlags.NonPublic | BindingFlags.Instance);
-	public static MethodInfo EndSendClientRpc = typeof(NetworkBehaviour).GetMethod("__endSendClientRpc", BindingFlags.NonPublic | BindingFlags.Instance);
-
-	// Best guess at getting new players to load into the map after the game starts.
-	[HarmonyPostfix]
-	private static void Postfix(StartOfRound __instance, ulong clientId, int connectedPlayers, ulong[] connectedPlayerIdsOrdered, int assignedPlayerObjectId, int serverMoneyAmount, int levelID, int profitQuota, int timeUntilDeadline, int quotaFulfilled, int randomSeed) {
-		if (__instance.connectedPlayersAmount + 1 >= __instance.allPlayerScripts.Length)
-			Plugin.SetLobbyJoinable(false);
-
-		PlayerControllerB ply = __instance.allPlayerScripts[assignedPlayerObjectId];
-		// Make their player model visible.
-		ply.DisablePlayerModel(__instance.allPlayerObjects[assignedPlayerObjectId], true, true);
-
-		__instance.livingPlayers = __instance.connectedPlayersAmount + 1;
-		for (int i = 0; i < __instance.allPlayerScripts.Length; i++) {
-			PlayerControllerB pcb = __instance.allPlayerScripts[i];
-			if (pcb.isPlayerControlled && pcb.isPlayerDead) __instance.livingPlayers--;
-		}
-
-		if (__instance.IsServer && !__instance.inShipPhase) {
-			RoundManager rm = RoundManager.Instance;
-
-			ClientRpcParams clientRpcParams = new() {
-				Send = new ClientRpcSendParams() {
-					TargetClientIds = new List<ulong>() { clientId },
-				},
-			};
-
-			// Tell the new client to generate the level.
-			uint GenerateNewLevelClientRpc = 3073943002U;
-			{
-				FastBufferWriter fastBufferWriter = (FastBufferWriter)BeginSendClientRpc.Invoke(rm, new object[] { GenerateNewLevelClientRpc, clientRpcParams, 0 });
-				BytePacker.WriteValueBitPacked(fastBufferWriter, __instance.randomMapSeed);
-				BytePacker.WriteValueBitPacked(fastBufferWriter, __instance.currentLevelID);
-				BytePacker.WriteValueBitPacked(fastBufferWriter, __instance.currentLevel.moldSpreadIterations);
-				BytePacker.WriteValueBitPacked(fastBufferWriter, __instance.currentLevel.moldStartPosition);
-
-				MoldSpreadManager msm = UnityEngine.Object.FindObjectOfType<MoldSpreadManager>();
-				bool flag = msm != null;
-				fastBufferWriter.WriteValueSafe(flag);
-				if (flag) {
-					fastBufferWriter.WriteValueSafe(msm.planetMoldStates[StartOfRound.Instance.currentLevelID].destroyedMold.ToArray());
-				}
-
-				BytePacker.WriteValueBitPacked(fastBufferWriter, (int)rm.currentLevel.currentWeather + 0xFF);
-
-				EndSendClientRpc.Invoke(rm, new object[] { fastBufferWriter, GenerateNewLevelClientRpc, clientRpcParams, 0 });
-			}
-
-			// And also tell them that everyone is done generating it.
-			uint FinishGeneratingNewLevelClientRpc = 2729232387U;
-			{
-				FastBufferWriter fastBufferWriter = (FastBufferWriter)BeginSendClientRpc.Invoke(rm, new object[] { FinishGeneratingNewLevelClientRpc, clientRpcParams, 0 });
-				EndSendClientRpc.Invoke(rm, new object[] { fastBufferWriter, FinishGeneratingNewLevelClientRpc, clientRpcParams, 0 });
-			}
-		}
-	}
 }
 
 [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.OnPlayerDC))]
@@ -120,7 +58,7 @@ internal static class OnPlayerConnectedClientRpc_Patch {
 internal static class OnPlayerDC_Patch {
 	[HarmonyPostfix]
 	private static void Postfix() {
-		if (StartOfRound.Instance.inShipPhase || (Plugin.AllowJoiningWhileLanded && StartOfRound.Instance.shipHasLanded))
+		if (StartOfRound.Instance.inShipPhase)
 			Plugin.SetLobbyJoinable(true);
 	}
 }
@@ -138,23 +76,6 @@ internal static class SetShipReadyToLand_Patch {
 internal static class StartGame_Patch {
 	[HarmonyPrefix]
 	private static void Prefix() {
-		Plugin.SetLobbyJoinable(false);
-	}
-}
-
-[HarmonyPatch(typeof(StartOfRound), "OnShipLandedMiscEvents")]
-internal static class OnShipLandedMiscEvents_Patch {
-	[HarmonyPostfix]
-	private static void Postfix() {
-		if (Plugin.AllowJoiningWhileLanded && StartOfRound.Instance.connectedPlayersAmount + 1 < StartOfRound.Instance.allPlayerScripts.Length)
-			Plugin.SetLobbyJoinable(true);
-	}
-}
-
-[HarmonyPatch(typeof(StartOfRound), "ShipLeave")]
-internal static class ShipLeave_Patch {
-	[HarmonyPostfix]
-	private static void Postfix() {
 		Plugin.SetLobbyJoinable(false);
 	}
 }
