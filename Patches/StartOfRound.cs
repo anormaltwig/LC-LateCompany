@@ -82,6 +82,7 @@ internal static class OnPlayerDC_Patch {
 		player.disableSyncInAnimation = false;
 		player.externalForceAutoFade = Vector3.zero;
 		player.freeRotationInInteractAnimation = false;
+		player.hasBeenCriticallyInjured = false;
 		player.health = 100;
 		player.helmetLight.enabled = false;
 		player.holdingWalkieTalkie = false;
