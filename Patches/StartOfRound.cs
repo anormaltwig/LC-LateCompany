@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using UnityEngine;
 using System;
+using GameNetcodeStuff;
 
 namespace LateCompany.Patches;
 
@@ -63,9 +64,45 @@ internal static class OnPlayerConnectedClientRpc_Patch {
 [HarmonyWrapSafe]
 internal static class OnPlayerDC_Patch {
 	[HarmonyPostfix]
-	private static void Postfix() {
+	private static void Postfix(int playerObjectNumber) {
 		if (StartOfRound.Instance.inShipPhase)
 			Plugin.SetLobbyJoinable(true);
+
+		PlayerControllerB player = StartOfRound.Instance.allPlayerScripts[playerObjectNumber];
+		player.activatingItem = false;
+		player.bleedingHeavily = false;
+		player.clampLooking = false;
+		player.criticallyInjured = false;
+		player.Crouch(false);
+		player.disableInteract = false;
+		player.DisableJetpackControlsLocally();
+		player.disableLookInput = false;
+		player.disableMoveInput = false;
+		player.DisablePlayerModel(player.gameObject, enable: true, disableLocalArms: true);
+		player.disableSyncInAnimation = false;
+		player.externalForceAutoFade = Vector3.zero;
+		player.freeRotationInInteractAnimation = false;
+		player.hasBeenCriticallyInjured = false;
+		player.health = 100;
+		player.helmetLight.enabled = false;
+		player.holdingWalkieTalkie = false;
+		player.inAnimationWithEnemy = null;
+		player.inShockingMinigame = false;
+		player.inSpecialInteractAnimation = false;
+		player.inVehicleAnimation = false;
+		player.isClimbingLadder = false;
+		player.isSinking = false;
+		player.isUnderwater = false;
+		player.mapRadarDotAnimator?.SetBool("dead", false);
+		player.playerBodyAnimator?.SetBool("Limp", false);
+		player.ResetZAndXRotation();
+		player.sinkingValue = 0f;
+		player.speakingToWalkieTalkie = false;
+		player.statusEffectAudio?.Stop();
+		player.thisController.enabled = true;
+		player.transform.SetParent(StartOfRound.Instance.playersContainer);
+		player.twoHanded = false;
+		player.voiceMuffledByEnemy = false;
 	}
 }
 
