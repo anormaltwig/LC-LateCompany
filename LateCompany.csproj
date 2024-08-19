@@ -45,6 +45,12 @@
 		<Reference Include="UnityEngine.UIModule">
 			<HintPath>Lethal Company/Lethal Company_Data/Managed/UnityEngine.UIModule.dll</HintPath>
 		</Reference>
+		<Reference Include="UnityEngine.AnimationModule">
+			<HintPath>Lethal Company/Lethal Company_Data/Managed/UnityEngine.AnimationModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AudioModule">
+			<HintPath>Lethal Company/Lethal Company_Data/Managed/UnityEngine.AudioModule.dll</HintPath>
+		</Reference>
 
 		<Reference Include="Facepunch.Steamworks.Win64">
 			<HintPath>Lethal Company/Lethal Company_Data/Managed/Facepunch.Steamworks.Win64.dll</HintPath>
