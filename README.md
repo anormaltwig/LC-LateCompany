@@ -10,6 +10,10 @@ Please report any bugs you find on the github repository!
 
 ## Changelogs
 
+### V1.0.17
+
+- [Fix state of Player Controller when someone leaves while dead.(Charlese2)](https://github.com/anormaltwig/LC-LateCompany/pull/45)
+
 ### V1.0.16
 
 - [Fix lobby set as still joinable when full (Fixes quick menu invite friends button)(1A3Dev)](https://github.com/anormaltwig/LC-LateCompany/pull/43)
@@ -18,12 +22,12 @@ Please report any bugs you find on the github repository!
 
 - Removed ability to join while the ship is landed. Too many desync issues.
 
+<details>
+<summary>More</summary>
+
 ### V1.0.14
 
 - Updated to v56
-
-<details>
-<summary>More</summary>
 
 ### V1.0.13
 
