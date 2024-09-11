@@ -2,7 +2,7 @@
 	"name": "LateCompany",
 	"version_number": "1.0.17",
 	"website_url": "https://github.com/ANormalTwig/LC-LateCompany",
-	"description": "A mod to allow players to join after the game starts.",
+	"description": "A Lethal Company mod that allows players to join after the game has started",
 	"dependencies": [
 		"BepInEx-BepInExPack-5.4.2100"
 	]
